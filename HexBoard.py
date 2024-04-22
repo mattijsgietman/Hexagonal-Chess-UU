@@ -7,10 +7,6 @@ from Piece import *
 class HexBoard():
     def __init__(self):
         self.hexboard = [[None for _ in range(11)] for _ in range(21)]
-        #self.white_pieces_locations = [(20,5), (19,4), (19,6), (18,3), (18,5), (18,7), (17,2), (17,8), (16,1), (16,5), (16,9), (15,2), (15,8), (14,3), (14,7), (13,4), (13,6), (12,5)]
-        #self.black_pieces_locations = [(0,5), (1,4), (1,6), (2,3), (2,5), (2,7), (3,2), (3,8), (4,1), (4,5), (4,9), (5,2), (5,8), (6,3), (6,7), (7,4), (7,6), (8,5)]
-        #self.white_king_location = (19,6)
-        #self.black_king_location = (1,6)
         self._create_board()
         self._setup_pieces()
 
@@ -141,15 +137,6 @@ class HexBoard():
         return legal_moves
                 
     def move_piece(self, move, final=False):
-        """
-        Moves a piece on the hex board.
-
-        Args:
-            move (Move): The move object containing the initial and target positions, the piece being moved, and the enemy piece (if any).
-
-        Returns:
-            None
-        """
         initial = move.initial
         target = move.target
         piece = move.piece
@@ -171,15 +158,6 @@ class HexBoard():
             piece.total_moves += 1
 
     def undo_move(self, move):
-        """
-        Undoes a move on the hex board.
-
-        Args:
-            move (Move): The move object containing the initial and target positions, the piece being moved, and the enemy piece (if any).
-
-        Returns:
-            None
-        """
         initial = move.initial
         target = move.target
         piece = move.piece
@@ -205,15 +183,6 @@ class HexBoard():
                 piece.has_moved = False
 
     def in_check(self, color):
-        """
-        Checks if the given color is in check.
-
-        Args:
-            color (str): The color to check for.
-
-        Returns:
-            bool: True if the given color is in check, False otherwise.
-        """
         # Get the location of the king of the specified color
         king_location = self.get_king_location(color)
 
@@ -232,13 +201,6 @@ class HexBoard():
         return False
  
     def is_game_over(self, color):
-        """
-        Checks if the game is over.
-
-        Returns:
-            bool: True if the game is over, False otherwise.
-            str: The winner of the game (if any).
-        """
         # Check if the white king is in checkmate
         if self.in_check('white'):
             legal_moves = self.get_legal_moves('white')

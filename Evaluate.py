@@ -11,12 +11,6 @@ class Evaluate():
         self.knight_scores = []
 
     def evaluate(self, color):
-        """
-        Evaluates the current state of the game for the given player.
-
-        Returns:
-        - A score for the given player.
-        """
         score = 0
         checkmate = False
         color = 'white' if color == 'black' else 'white'

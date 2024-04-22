@@ -1,33 +1,14 @@
 from Move import Move
 
 class Piece():
-    """
-    Represents a game piece with a color.
-
-    Attributes:
-        color (str): The color of the piece.
-    """
-
     def __init__(self, color):
         self.color = color
         self.value = 0
 
     def set_color(self, color):
-        """
-        Sets the color of the piece.
-
-        Args:
-            color (str): The new color of the piece.
-        """
         self.color = color
     
     def get_color(self):
-        """
-        Returns the color of the piece.
-
-        Returns:
-            str: The color of the piece.
-        """
         return self.color
 
     def __lt__(self, other):
@@ -60,18 +41,6 @@ class Pawn(Piece):
         self.total_moves = 0
     
     def _get_legal_moves(self, row, col, hexboard):
-        """
-        Get the legal moves for the piece at the given position on the hexboard.
-
-        Args:
-            row (int): The row index of the piece.
-            col (int): The column index of the piece.
-            hexboard (HexBoard): The hexboard object.
-
-        Returns:
-            list: A list of Move objects representing the legal moves.
-
-        """
         moves = []
 
         # Check if there is an empty space two rows above (for white) or two rows below (for black)
@@ -134,22 +103,7 @@ class Knight(Piece):
         ]
     
     def _get_legal_moves(self, row, col, hexboard):
-        """
-        Get the legal moves for the piece at the given position on the hexboard.
-
-        Args:
-            row (int): The row index of the piece.
-            col (int): The column index of the piece.
-            hexboard (HexBoard): The hexboard object.
-
-        Returns:
-            list: A list of Move objects representing the legal moves.
-
-        """
         moves = []
-
-        # Check for all possible directions that the knight can move in, if it is a valid move. If it is a valid move
-        # then add it to the list of legal moves.
         for direction in self.directions:
             target = (row + direction[0], col + direction[1])
             if 0 <= target[0] < 21 and 0 <= target[1] < 11 and hexboard.get_hexagon(target[0], target[1]) is not None:

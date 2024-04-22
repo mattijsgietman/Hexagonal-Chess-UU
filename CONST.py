@@ -1,17 +1,3 @@
-"""
-This module contains constants used.
-
-POSITIONS:
-This list represents the positions of points in a hexagonal grid.
-Each tuple in the list represents the (x, y) coordinates of a point.
-The points are arranged in a hexagonal pattern, with the center point at (10, 5).
-The grid has a total of 21 rows and 11 columns.
-The positions are listed in a clockwise spiral pattern, starting from the center and moving outwards.
-
-DEPTH:
-This constant represents the maximum depth for the minmax algorithm.
-"""
-
 POSITIONS = [
     (0, 5),
     (1, 4), (1, 6),

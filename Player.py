@@ -16,18 +16,6 @@ class Agent(Player):
         self.agent_type = agent_type
     
     def get_random_move(self, hexboard):
-        """
-        Returns a random legal move for the player.
-
-        Parameters:
-        - hexboard: The game hexboard object.
-
-        Returns:
-        - A random legal move for the player.
-
-        Raises:
-        - ValueError: If the agent type is invalid.
-        """
         if self.agent_type == "random":
             legal_moves = hexboard.get_legal_moves(self.color)
             return random.choice(legal_moves)
