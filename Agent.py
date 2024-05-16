@@ -1,37 +1,69 @@
-from DeepQNetwork import DeepQNetwork
+import torch as T
+import torch.nn.functional as F
 import numpy as np
+from Replay import ReplayBuffer
+from DeepQNetwork import DeepQNetwork
 
-class Agent():
-    def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions,
-                 max_mem_size=100000, eps_end=0.01, eps_dec=5e-4):
+class DQNAgent:
+    def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, max_mem_size=100000, eps_end=0.01, eps_dec=5e-4):
         self.gamma = gamma
         self.epsilon = epsilon
-        self.lr = lr
-        self.input_dims = input_dims
-        self.batch_size = batch_size
-        self.n_actions = n_actions
-        self.max_mem_size = max_mem_size
-        self.eps_end = eps_end
+        self.eps_min = eps_end
         self.eps_dec = eps_dec
+        self.lr = lr
         self.action_space = [i for i in range(n_actions)]
-        self.mem_size = 0
-
-        self.Q_eval = DeepQNetwork(self.lr, input_dims=self.input_dims, 
-                                   n_actions=self.n_actions, fc1_dims=256, fc2_dims=256)
-
-        self.state_memory = np.zeros((self.max_mem_size, *input_dims), dtype=np.float32)
-        self.new_state_memory = np.zeros((self.max_mem_size, *input_dims), 
-                                         dtype=np.float32)
-        self.action_memory = np.zeros(self.max_mem_size, dtype=np.float32)
-        self.reward_memory = np.zeros(self.max_mem_size, dtype=np.float32)
-        self.terminal_memory = np.zeros(self.max_mem_size, dtype=np.bool)
+        self.n_actions = n_actions
+        self.batch_size = batch_size
+        self.mem_size = max_mem_size
+        self.replace = 100
+        self.learn_step_counter = 0
+        self.memory = ReplayBuffer(max_mem_size, input_dims, n_actions)
+        
+        self.q_eval = DeepQNetwork(lr, n_actions=n_actions, input_dims=input_dims, fc1_dims=256, fc2_dims=128)
         
     def store_transition(self, state, action, reward, state_, done):
-        index = self.mem_size % self.max_mem_size
-        self.state_memory[index] = state
-        self.new_state_memory[index] = state_
-        self.reward_memory[index] = reward
-        self.action_memory[index] = action
-        self.terminal_memory[index] = done
+        self.memory.store_transition(state, action, reward, state_, done)
 
-        self.mem_size += 1
+    def choose_action(self, state):
+        if np.random.random() > self.epsilon:
+            state = T.tensor([state], dtype=T.float).to(self.q_eval.device)
+            actions = self.q_eval.forward(state)
+            sorted_actions = T.argsort(actions, descending=True).squeeze()
+            return sorted_actions.tolist()
+        else:
+            return np.random.permutation(self.action_space).tolist()
+
+
+    def learn(self):
+        if len(self.memory) < self.batch_size:
+            return
+
+        self.q_eval.optimizer.zero_grad()
+
+        max_mem = min(len(self.memory), self.mem_size)
+        batch = self.memory.sample_buffer(self.batch_size)
+        states, actions, rewards, states_, dones = batch
+
+        states = T.tensor(states).to(self.q_eval.device)
+        actions = T.tensor(actions).to(self.q_eval.device)
+        rewards = T.tensor(rewards).to(self.q_eval.device)
+        states_ = T.tensor(states_).to(self.q_eval.device)
+        dones = T.tensor(dones).to(self.q_eval.device)
+
+        indices = np.arange(self.batch_size)
+        q_pred = self.q_eval.forward(states)[indices, actions]
+        q_next = self.q_eval.forward(states_).max(dim=1)[0]
+        q_next[dones] = 0.0
+
+        q_target = rewards + self.gamma * q_next
+
+        loss = self.q_eval.loss(q_target, q_pred).to(self.q_eval.device)
+        loss.backward()
+        self.q_eval.optimizer.step()
+        self.epsilon = self.epsilon - self.eps_dec if self.epsilon > self.eps_min else self.eps_min
+
+    def save_models(self):
+        T.save(self.q_eval.state_dict(), 'q_eval.pth')
+
+    def load_models(self):
+        self.q_eval.load_state_dict(T.load('q_eval.pth'))

@@ -1,5 +1,5 @@
 class Move:
-    def __init__(self, piece, initial, target, enemy_piece):
+    def __init__(self, piece, initial, target, enemy_piece=None):
         self.piece = piece
         self.initial = initial
         self.target = target

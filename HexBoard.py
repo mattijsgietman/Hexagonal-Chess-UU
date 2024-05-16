@@ -1,4 +1,5 @@
 from openpyxl import load_workbook
+import random
 
 from Hex import Hex
 from CONST import *
@@ -9,6 +10,7 @@ class HexBoard():
         self.hexboard = [[None for _ in range(11)] for _ in range(21)]
         self._create_board()
         self._setup_pieces()
+        self.load_puzzle("2")
 
     def _create_board(self):
         for position in POSITIONS:
@@ -243,6 +245,11 @@ class HexBoard():
         filepath = f"puzzles/{puzzle}.xlsx"
         workbook = load_workbook(filepath, data_only=True)
         data = []
+        pawn_counter = 0
+        knight_counter = 9
+        bishop_counter = 11
+        rook_counter = 14
+        queen_counter = 16
         i=0
         for row in workbook.active.iter_rows(values_only=True):
             if i != 0:
@@ -254,5 +261,59 @@ class HexBoard():
             if piece == 'Pawn':
                 if first_move == 'True':
                     self.hexboard[row][col].piece.has_moved = False
+                    self.hexboard[row][col].piece.index = pawn_counter
+                    pawn_counter += 1
                 else:
                     self.hexboard[row][col].piece.has_moved = True
+                    self.hexboard[row][col].piece.index = pawn_counter
+                    pawn_counter += 1
+            elif piece == 'Knight':
+                self.hexboard[row][col].piece.index = knight_counter
+                knight_counter += 1
+            elif piece == 'Bishop':
+                self.hexboard[row][col].piece.index = bishop_counter
+                bishop_counter += 1
+            elif piece == 'Rook':
+                self.hexboard[row][col].piece.index = rook_counter
+                rook_counter += 1
+            elif piece == 'Queen':
+                self.hexboard[row][col].piece.index = queen_counter
+                queen_counter += 1
+
+    def action_to_tuple(self, output):
+        piece = output // 91
+        hexagon = output % 91
+        return (piece, POSITIONS[hexagon])
+    
+    def index_to_piece(self, index):
+        locations = self.get_pieces_locations('white') 
+        for location in locations:
+            row, col = location
+            piece = self.get_piece(row, col)
+            if piece != None:
+                if piece.index == index:
+                    return piece
+    
+    def legal_moves_to_actions(self, legal_moves):
+        actions = []
+        for move in legal_moves:
+            index = move.piece.index
+            target = move.target
+            actions.append((index, target))
+        return actions
+    
+    def action_to_move(self, action):
+        index, target = action
+        locations = self.get_pieces_locations("white") 
+
+        for location in locations:
+            row, col = location
+            piece = self.get_piece(row, col)
+            if piece != None:
+                if piece.index == index:
+                    return Move(piece, location, target)
+                
+    def random_black_move(self):
+        legal_moves = self.get_legal_moves("black")
+        move = random.choice(legal_moves)
+        return move

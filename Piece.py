@@ -1,9 +1,10 @@
 from Move import Move
 
 class Piece():
-    def __init__(self, color):
+    def __init__(self, color, index=None):
         self.color = color
         self.value = 0
+        self.index = index
 
     def set_color(self, color):
         self.color = color
