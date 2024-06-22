@@ -22,9 +22,12 @@ POSITIONS = [
     (20, 5)
 ]
 
+POS_IDX = {pos: idx for idx, pos in enumerate(POSITIONS)}
+
 PAWN_PROMOTION_HEXAGONS = [(5,0), (4,1), (3,2), (2,3), (1,4), (0,5), (1,6),
                          (2,7), (3,8), (4,9), (5,10),
                          (15,0), (16,1), (17,2), (18,3), (19,4), (20,5), (19,6),
                          (18,7), (17,8), (16,9), (15,10)]
                                         
-DEPTH = 2
+DEPTH = 0
+MOVE_LIMIT = 20

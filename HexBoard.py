@@ -10,7 +10,8 @@ class HexBoard():
         self.hexboard = [[None for _ in range(11)] for _ in range(21)]
         self._create_board()
         self._setup_pieces()
-        self.load_puzzle("2")
+        self.random_puzzle = random.randint(1, 12)
+        self.load_puzzle(str(self.random_puzzle))
 
     def _create_board(self):
         for position in POSITIONS:
@@ -156,7 +157,9 @@ class HexBoard():
             if final:
                 piece.has_moved = True
             if target in PAWN_PROMOTION_HEXAGONS:
+                piece_index = self.hexboard[target_row][target_col].piece.index
                 self.hexboard[target_row][target_col].piece = Queen(piece.color)
+                self.hexboard[target_row][target_col].piece.index = piece_index
             piece.total_moves += 1
 
     def undo_move(self, move):
@@ -245,7 +248,8 @@ class HexBoard():
         filepath = f"puzzles/{puzzle}.xlsx"
         workbook = load_workbook(filepath, data_only=True)
         data = []
-        pawn_counter = 0
+        king_counter = 0
+        pawn_counter = 1
         knight_counter = 9
         bishop_counter = 11
         rook_counter = 14
@@ -279,6 +283,9 @@ class HexBoard():
             elif piece == 'Queen':
                 self.hexboard[row][col].piece.index = queen_counter
                 queen_counter += 1
+            elif piece == 'King':
+                self.hexboard[row][col].piece.index = king_counter
+                king_counter += 1
 
     def action_to_tuple(self, output):
         piece = output // 91
@@ -315,5 +322,7 @@ class HexBoard():
                 
     def random_black_move(self):
         legal_moves = self.get_legal_moves("black")
+        if len(legal_moves) == 0:
+            return None
         move = random.choice(legal_moves)
         return move

@@ -1,0 +1,4 @@
+1. Train the model on 1 puzzle, save it -> load it in again train it, etc.
+2. External Libraries. RayRL
+3. Different learning (optimizers and such)
+

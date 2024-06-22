@@ -5,7 +5,7 @@ from Replay import ReplayBuffer
 from DeepQNetwork import DeepQNetwork
 
 class DQNAgent:
-    def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, max_mem_size=100000, eps_end=0.01, eps_dec=5e-4):
+    def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, max_mem_size=100000, eps_end=0.01, eps_dec=2e-5):
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_min = eps_end
@@ -24,15 +24,30 @@ class DQNAgent:
     def store_transition(self, state, action, reward, state_, done):
         self.memory.store_transition(state, action, reward, state_, done)
 
-    def choose_action(self, state):
+    def apply_valid_moves_mask(self, q_values, valid_moves_mask):
+        mask_tensor = T.tensor(valid_moves_mask, dtype=T.float).to(self.q_eval.device)
+        masked_q_values = q_values * mask_tensor
+        return masked_q_values
+
+    def choose_action(self, state, valid_moves_mask):
+        state = T.tensor(np.array([state]), dtype=T.float).to(self.q_eval.device)
+        actions = self.q_eval.forward(state)
+        
         if np.random.random() > self.epsilon:
-            state = T.tensor([state], dtype=T.float).to(self.q_eval.device)
-            actions = self.q_eval.forward(state)
-            sorted_actions = T.argsort(actions, descending=True).squeeze()
+            masked_actions = self.apply_valid_moves_mask(actions, valid_moves_mask)
+            sorted_actions = T.argsort(masked_actions, descending=True).squeeze()
             return sorted_actions.tolist()
         else:
-            return np.random.permutation(self.action_space).tolist()
-
+            masked_actions = self.apply_valid_moves_mask(actions, valid_moves_mask)
+            max_action_value = masked_actions.max().item()
+            if max_action_value == 0:
+                return None
+            
+            valid_indices = np.where(valid_moves_mask == 1)[0]
+            if len(valid_indices) == 0:
+                return None
+            random_move = np.random.choice(valid_indices)
+            return [random_move]
 
     def learn(self):
         if len(self.memory) < self.batch_size:
@@ -66,4 +81,4 @@ class DQNAgent:
         T.save(self.q_eval.state_dict(), 'q_eval.pth')
 
     def load_models(self):
-        self.q_eval.load_state_dict(T.load('q_eval.pth'))
+        self.q_eval.load_state_dict(T.load('q_eval_full.pth'))

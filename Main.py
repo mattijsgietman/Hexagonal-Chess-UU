@@ -5,9 +5,11 @@ import time
 class Main():
     def __init__(self):
         self.hexboard = HexBoard()
-        self.hexboard.load_puzzle("1")
-        self.player1 = Agent("white", "min_max")
-        self.player2 = Agent("black", "random")
+        self.hexboard.load_puzzle("5")
+        self.player1 = Agent()
+        self.player1._init_("white", "min_max")
+        self.player2 = Agent()
+        self.player2._init_("black", "random")
         self.current_player = self.player1
         self.game_over = False
         self.winner = ""
@@ -32,7 +34,7 @@ class Main():
 
                 elif self.current_player.agent_type == "min_max":
                     move_timer_start = time.time()
-                    move = self.current_player.find_min_max_move(self.hexboard, self.current_player.color)
+                    move = self.current_player.find_min_max_move(self.hexboard, self.current_player.color, use_multiprocessing=True, use_alpha_beta=False)
                     self.hexboard.move_piece(move, final=True)
                     move_timer_end = time.time()
                     print(f"Move time: {move_timer_end - move_timer_start} seconds")
@@ -51,7 +53,7 @@ class Main():
 
         end_time = time.time()
         elapsed_time = end_time - start_time
-        print(f"Elapsed time: {elapsed_time} seconds")
+        print(f"Elapsed Total time: {elapsed_time} seconds")
         print(dictionary)
 
 if __name__ == "__main__":

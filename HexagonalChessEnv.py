@@ -31,8 +31,15 @@ class HexagonalChessEnv(gym.Env):
         if action is not None:
             self.hexboard.move_piece(action, final=True)
             
-            reward = 1 if self.hexboard.is_game_over(self.current_player)[0] else 0
-            done = reward == 1
+            if self.hexboard.is_game_over(self.current_player)[0]:
+                reward = 100
+                done = True
+            elif self.hexboard.is_game_over('black')[0]:
+                reward = 0
+                done = True
+            else:
+                reward = 0
+                done = False
             
             self.current_player = 'black' if self.current_player == 'white' else 'white'
         else:
