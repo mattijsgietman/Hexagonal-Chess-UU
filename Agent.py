@@ -81,4 +81,4 @@ class DQNAgent:
         T.save(self.q_eval.state_dict(), 'q_eval.pth')
 
     def load_models(self):
-        self.q_eval.load_state_dict(T.load('q_eval_full.pth'))
+        self.q_eval.load_state_dict(T.load('q_eval.pth'))

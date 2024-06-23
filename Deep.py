@@ -8,11 +8,13 @@ import matplotlib.pyplot as plt
 import time
 
 env = HexagonalChessEnv.HexagonalChessEnv()
-n_games = 25000
-agent = DQNAgent(gamma=0.99, epsilon=1, lr=0.001, input_dims=(91,), batch_size=128, n_actions=1638)
-agent.load_models()
+n_games = 6500
+agent = DQNAgent(gamma=0.85, epsilon=1, lr=0.001, input_dims=(1092,), batch_size=128, n_actions=1638)
+#agent.load_models()
 minmax = Agent()
 minmax._init_("black", "min_max")
+
+begin_time = time.time()
 
 scores = []
 eps_history = []
@@ -58,7 +60,6 @@ for i in range(n_games):
                         break
 
                 if type(action) == int:
-                    print("Invalid action")
                     done = True
                     score = 0
                     continue
@@ -98,9 +99,9 @@ for i in range(n_games):
         avg_score = np.mean(scores[-100:])
         print(f'episode {i}, score {score}, average score {avg_score}, epsilon {agent.epsilon}')
 
+final_time = time.time()
+print(f"Elapsed Total time: {final_time - begin_time} seconds")
+
 save = input("Do you want to save the model? (y/n): ")
 if save == "y":
     agent.save_models()
-
-plt.plot(scores)
-plt.show()

@@ -43,20 +43,32 @@ class HexagonalChessEnv(gym.Env):
             
             self.current_player = 'black' if self.current_player == 'white' else 'white'
         else:
-            reward = -1
+            reward = 0
             done = True
 
         observation = self._get_observation()
         info = {}
         
         return observation, reward, done, info
-
+    '''
     def _get_observation(self):
         board_state = np.zeros(len(self.valid_positions), dtype=np.int32)
         for idx, (row, col) in enumerate(self.valid_positions):
             piece = self.hexboard.get_piece(row, col)
             if piece is not None:
                 board_state[idx] = self._piece_to_int(piece)
+        return board_state
+    '''
+    def _get_observation(self):
+        board_state = np.zeros(1092)
+        pieces = ["p", "k", "b", "r", "q", "k", "P", "K", "B", "R", "Q", "K"]
+        for piece in pieces:
+            for row in self.hexboard.hexboard:
+                for hexagon in row:
+                    if hexagon is not None:
+                        if hexagon.piece is not None:
+                            if hexagon.piece.name == piece:
+                                board_state[self.position_to_index[(hexagon.row, hexagon.col)]] = 1
         return board_state
 
     def _piece_to_int(self, piece):
