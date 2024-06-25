@@ -211,7 +211,7 @@ class King(Piece):
     def __init__(self, color):
         super().__init__(color)
         self.first_move = True
-        self.value = float("inf") if self.color == "white" else float("-inf")
+        self.value = 1000 if self.color == "white" else -1000
         self.name = "k" if self.color == "white" else "K"
         self.directions = [(-1, -1), (2,0), (1, 1), (-1,1), (-2,0), (1,-1), (-3, -1), (-3, 1), (3, -1), (3,1), (0,2), (0,-2)]
  
