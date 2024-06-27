@@ -2,10 +2,6 @@ import numpy as np
 import random
 from collections import deque
 
-from collections import deque
-import numpy as np
-import random
-
 class ReplayBuffer:
     """
     A replay buffer for storing and sampling transitions for reinforcement learning.
