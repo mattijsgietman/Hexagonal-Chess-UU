@@ -16,14 +16,36 @@ class Agent(Player):
         self.agent_type = agent_type
         self.nodes_explored = 0
     
-    def get_random_move(self, hexboard):
-        if self.agent_type == "random":
-            legal_moves = hexboard.get_legal_moves(self.color)
-            return random.choice(legal_moves)
-        else:
-            raise ValueError("Invalid agent type")
+    class Player:
+        def get_random_move(self, hexboard):
+            """
+            Returns a random legal move for the player.
+
+            Parameters:
+            - hexboard (HexBoard): The hexagonal chess board.
+
+            Returns:
+            - tuple: A tuple representing the coordinates of the selected move.
+
+            Raises:
+            - ValueError: If the agent type is invalid.
+            """
+            if self.agent_type == "random":
+                legal_moves = hexboard.get_legal_moves(self.color)
+                return random.choice(legal_moves)
+            else:
+                raise ValueError("Invalid agent type")
         
     def min_max_worker(self, args):
+        """
+        Executes the Min-Max algorithm on a given move and returns the evaluation.
+
+        Args:
+            args (tuple): A tuple containing the move, hexboard, maximizing flag, depth, alpha, beta, and use_alpha_beta.
+
+        Returns:
+            tuple: A tuple containing the move and its evaluation.
+        """
         move, hexboard, maximizing, depth, alpha, beta, use_alpha_beta = args
         hexboard.move_piece(move)
         evaluation = self.min_max(hexboard, not maximizing, depth, alpha, beta, use_alpha_beta)
@@ -54,6 +76,21 @@ class Agent(Player):
         return best_move[0]
 
     def min_max(self, hexboard, maximizing, depth=DEPTH, alpha=float("-inf"), beta=float("inf"), use_alpha_beta=True):
+        """
+        Applies the Minimax algorithm to determine the best move for the current player.
+
+        Args:
+            hexboard (HexBoard): The hexagonal chess board.
+            maximizing (bool): Indicates whether the current player is maximizing or not.
+            depth (int): The depth of the search tree (default: DEPTH).
+            alpha (float): The alpha value for alpha-beta pruning (default: float("-inf")).
+            beta (float): The beta value for alpha-beta pruning (default: float("inf")).
+            use_alpha_beta (bool): Indicates whether to use alpha-beta pruning or not (default: True).
+
+        Returns:
+            float: The evaluation score of the best move.
+
+        """
         if self.agent_type == "min_max":
             global next_move
 

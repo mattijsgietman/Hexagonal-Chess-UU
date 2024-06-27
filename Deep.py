@@ -20,6 +20,19 @@ scores = []
 eps_history = []
 
 def get_valid_moves_mask(env, legal_moves):
+    """
+    Generates a mask indicating the valid moves in the given environment.
+
+    Args:
+        env: The environment object representing the game state.
+        legal_moves: A list of legal moves in the current game state.
+
+    Returns:
+        mask: A numpy array of shape (1638,) representing the mask of valid moves.
+              Each index in the mask corresponds to a specific move, and a value of 1
+              indicates that the move is valid, while a value of 0 indicates that the
+              move is invalid.
+    """
     mask = np.zeros(1638, dtype=np.int32)
 
     if len(legal_moves) != 0:
@@ -76,10 +89,8 @@ for i in range(n_games):
                 state = state_
                 move_counter += 1
                 end_time = time.time()
-                #print(f"Move time: {end_time - start_time} seconds")
 
             else:
-                #action = env.hexboard.random_black_move()
                 if len(env.hexboard.get_legal_moves(env.current_player)) != 0:
                     action = minmax.find_min_max_move(env.hexboard, env.current_player, False)
                     if action is None:

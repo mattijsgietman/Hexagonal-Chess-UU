@@ -1,33 +1,101 @@
 from Move import Move
 
 class Piece():
+    """
+    Represents a chess piece.
+
+    Attributes:
+        color (str): The color of the piece.
+        value (int): The value of the piece.
+        index (int): The index of the piece.
+
+    Methods:
+        set_color(color): Sets the color of the piece.
+        get_color(): Returns the color of the piece.
+    """
+
     def __init__(self, color, index=None):
+        """
+        Initializes a new instance of the Piece class.
+
+        Args:
+            color (str): The color of the piece.
+            index (int, optional): The index of the piece. Defaults to None.
+        """
         self.color = color
         self.value = 0
         self.index = index
 
     def set_color(self, color):
+        """
+        Sets the color of the piece.
+
+        Args:
+            color (str): The color of the piece.
+        """
         self.color = color
     
     def get_color(self):
+        """
+        Returns the color of the piece.
+
+        Returns:
+            str: The color of the piece.
+        """
         return self.color
 
     def __lt__(self, other):
+        """
+        Less than comparison operator.
+
+        Args:
+            other (Piece): The other piece to compare with.
+
+        Returns:
+            bool: True if the value of this piece is less than the value of the other piece, False otherwise.
+        """
         if isinstance(other, Piece):
             return self.value < other.value
         return NotImplemented
 
     def __le__(self, other):
+        """
+        Less than or equal to comparison operator.
+
+        Args:
+            other (Piece): The other piece to compare with.
+
+        Returns:
+            bool: True if the value of this piece is less than or equal to the value of the other piece, False otherwise.
+        """
         if isinstance(other, Piece):
             return self.value <= other.value
         return NotImplemented
 
     def __gt__(self, other):
+        """
+        Greater than comparison operator.
+
+        Args:
+            other (Piece): The other piece to compare with.
+
+        Returns:
+            bool: True if the value of this piece is greater than the value of the other piece, False otherwise.
+        """
         if isinstance(other, Piece):
             return self.value > other.value
         return NotImplemented
 
     def __ge__(self, other):
+        """
+        Greater than or equal to comparison operator.
+
+        Args:
+            other (Piece): The other piece to compare with.
+
+        Returns:
+            bool: True if the value of this piece is greater than or equal to the value of the other piece, False otherwise.
+        """
         if isinstance(other, Piece):
             return self.value >= other.value
         return NotImplemented
@@ -42,6 +110,17 @@ class Pawn(Piece):
         self.total_moves = 0
     
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
 
         # Check if there is an empty space two rows above (for white) or two rows below (for black)
@@ -104,6 +183,17 @@ class Knight(Piece):
         ]
     
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
         for direction in self.directions:
             target = (row + direction[0], col + direction[1])
@@ -124,6 +214,17 @@ class Bishop(Piece):
         self.directions = [(-3, -1), (-3, 1), (3, -1), (3,1), (0,2), (0,-2)]
     
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
 
         for direction in self.directions:
@@ -154,6 +255,17 @@ class Rook(Piece):
         self.directions = [(-1, -1), (2,0), (1, 1), (-1,1), (-2,0), (1,-1)]
     
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
 
         for direction in self.directions:
@@ -186,6 +298,17 @@ class Queen(Piece):
         
     
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
 
         for direction in self.directions:
@@ -216,6 +339,17 @@ class King(Piece):
         self.directions = [(-1, -1), (2,0), (1, 1), (-1,1), (-2,0), (1,-1), (-3, -1), (-3, 1), (3, -1), (3,1), (0,2), (0,-2)]
  
     def _get_legal_moves(self, row, col, hexboard):
+        """
+        Get the legal moves for the piece at the specified position on the hexagonal board.
+
+        Args:
+            row (int): The row index of the piece.
+            col (int): The column index of the piece.
+            hexboard (HexBoard): The hexagonal board object.
+
+        Returns:
+            list: A list of Move objects representing the legal moves for the piece.
+        """
         moves = []
 
         for direction in self.directions:

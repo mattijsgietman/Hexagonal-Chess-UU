@@ -1,4 +1,14 @@
 class Move:
+    """
+    Represents a move in the game of Hexagonal Chess.
+
+    Attributes:
+        piece (Piece): The piece being moved.
+        initial (Hexagon): The initial hexagon from which the piece is moved.
+        target (Hexagon): The target hexagon to which the piece is moved.
+        enemy_piece (Piece): The enemy piece that is captured, if any.
+    """
+
     def __init__(self, piece, initial, target, enemy_piece=None):
         self.piece = piece
         self.initial = initial

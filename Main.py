@@ -5,7 +5,7 @@ import time
 class Main():
     def __init__(self):
         self.hexboard = HexBoard()
-        self.hexboard.load_puzzle("8")
+        self.hexboard.load_puzzle("2")
         self.player1 = Agent()
         self.player1._init_("white", "min_max")
         self.player2 = Agent()
@@ -17,7 +17,14 @@ class Main():
 
     def play(self):
         """
-        Plays the game.
+        Plays a game of Hexagonal Chess.
+
+        This method initializes the game, prints the hexboard, and then enters a loop where players take turns making moves.
+        The loop continues until the game is over. After each move, the hexboard is printed and the game state is checked.
+        If the game is over, the winner is determined and the statistics are updated.
+
+        Returns:
+            None
         """
         dictionary = {'white': 0, 'black': 0, 'remise': 0}
         total_games = 1
